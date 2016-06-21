@@ -37,9 +37,10 @@ http.createServer(onRequest).listen(8000);
 console.log("Server is now running...");*/
 
 
-var app = require('express')(),
+var app  = require('express')(),
     port = process.env.PORT || 3000,
-    _ = require('underscore');
+    fs   = require('fs'),
+    _    = require('underscore');
 
 todo = [
     {name: "name1", summary: "sum1"},
@@ -47,7 +48,15 @@ todo = [
 ];
 
 app.get('/', function(request, response){
-    response.send('<h1>Hello World</h1>');
+    response.header('Content-Type', 'text/html');
+    response.sendFile("./index.html", {root: __dirname });
+});
+
+app.post('/', function(request, response){
+    console.log(request);
+    response
+        .status(201)
+        .send({success: true });
 });
 
 app.get('/todo', function(request, response) {
@@ -67,23 +76,23 @@ app.get('/todo/:todoName', function(request, response) {
     response.send(JSON.stringify(result, null, ' '));
 });
 
-app.post('/todo/:todoName/:todoSum', function(request, response) {
+app.post('/todo/:todoName/:todoSumm', function(request, response) {
     var name = request.params.todoName;
-    var sum = request.params.todoSum;
-    console.log(sum);
+    var summ = request.params.todoSumm;
+   
     var _todo = _.find(todo, function(u) {
         return u.name == name;
     });
 
     var result = _todo
                     ? { success: false, reason: 'already exists: ' + name }
-                    : { success: true, added: name};
+                    : { success: true, added: { name: name, summary: summ }};
     
     if (! _todo){
-        todo.push({name: name, summary: ""});
+        todo.push({name: name, summary: summ});
     }
 
-    response.send(JSON.stringify(result, null, ' '));
+    response.send(JSON.stringify(result, null, '   '));
 });
 
 
