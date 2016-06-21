@@ -37,14 +37,17 @@ http.createServer(onRequest).listen(8000);
 console.log("Server is now running...");*/
 
 
-var app  = require('express')(),
+const app  = require('express')(),
     port = process.env.PORT || 3000,
     fs   = require('fs'),
+    bodyParser = require('body-parser'),
     _    = require('underscore');
 
+app.use(bodyParser.json());
+
 todo = [
-    {name: "name1", summary: "sum1"},
-    {name: "name2", summary: "sum2"}
+    {name: "name1", description: "sum1"},
+    {name: "name2", description: "sum2"}
 ];
 
 app.get('/', function(request, response){
@@ -53,10 +56,30 @@ app.get('/', function(request, response){
 });
 
 app.post('/', function(request, response){
-    console.log(request);
+    let body = request.body;
+    let name = body.name;
+    let result;
+
+    if (name == "") {
+        result = { success: false, reason: 'No name specified!'}
+    }
+    else {
+        var _todo = _.find(todo, function(u) {
+            return u.name == name;
+        });
+
+        result = _todo
+                    ? { success: false, reason: 'already exists: ' + name }
+                    : { success: true, added: { name: body.name, description: body.description }};
+        
+        if (! _todo){
+            todo.push({name: body.name, description: body.description});
+        }
+    }
+
     response
         .status(201)
-        .send({success: true });
+        .send(JSON.stringify(result, null, ' '));
 });
 
 app.get('/todo', function(request, response) {
@@ -74,25 +97,6 @@ app.get('/todo/:todoName', function(request, response) {
                     : { success: false, reason: 'todo not found: ' + name };
     
     response.send(JSON.stringify(result, null, ' '));
-});
-
-app.post('/todo/:todoName/:todoSumm', function(request, response) {
-    var name = request.params.todoName;
-    var summ = request.params.todoSumm;
-   
-    var _todo = _.find(todo, function(u) {
-        return u.name == name;
-    });
-
-    var result = _todo
-                    ? { success: false, reason: 'already exists: ' + name }
-                    : { success: true, added: { name: name, summary: summ }};
-    
-    if (! _todo){
-        todo.push({name: name, summary: summ});
-    }
-
-    response.send(JSON.stringify(result, null, '   '));
 });
 
 
