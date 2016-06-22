@@ -41,21 +41,19 @@ const app  = require('express')(),
     port = process.env.PORT || 3000,
     fs   = require('fs'),
     bodyParser = require('body-parser'),
-    _    = require('underscore');
+    _    = require('underscore'),
+    file = require('./file');
 
 app.use(bodyParser.json());
 
-todo = [
-    {name: "name1", description: "sum1"},
-    {name: "name2", description: "sum2"}
-];
+todo = [];
 
-app.get('/', function(request, response){
+app.get('/', (request, response) => {
     response.header('Content-Type', 'text/html');
     response.sendFile("./index.html", {root: __dirname });
 });
 
-app.post('/', function(request, response){
+app.post('/', (request, response) => {
     let body = request.body;
     let name = body.name;
     let result;
@@ -64,43 +62,45 @@ app.post('/', function(request, response){
         result = { success: false, reason: 'No name specified!'}
     }
     else {
-        var _todo = _.find(todo, function(u) {
-            return u.name == name;
-        });
-
-        result = _todo
+        file.isInFile(name).then((found) => {
+            result = found
                     ? { success: false, reason: 'already exists: ' + name }
                     : { success: true, added: { name: body.name, description: body.description }};
         
-        if (! _todo){
-            todo.push({name: body.name, description: body.description});
-        }
+            if (!found){
+                file.write({name: body.name, description: body.description});
+            }
+
+            response
+                .status(201)
+                .send(JSON.stringify(result, null, ' '));
+        });
     }
-
-    response
-        .status(201)
-        .send(JSON.stringify(result, null, ' '));
 });
 
-app.get('/todo', function(request, response) {
-    response.send({ todo: todo });
+app.get('/todo', (request, response) => {
+    //response.send({ todo: todo });
+    response.writeHead(200, {"Context-Type" : "text/plain"});
+    file.readAll().pipe(response);
 });
 
-app.get('/todo/:todoName', function(request, response) {
+app.get('/todo/:todoName', (request, response) => {
     var name = request.params.todoName;
-    var _todo = _.find(todo, function(u) {
-        return u.name == name;
-    });
-
-    var result = _todo
-                    ? { success: true, name: _todo.name, description: _todo.summary }
+    file.findObj(name).then((obj) => {
+        var result = obj
+                    ? { success: true, name: obj.name, description: obj.description }
                     : { success: false, reason: 'todo not found: ' + name };
-    
-    response.send(JSON.stringify(result, null, ' '));
+
+        response
+            .send(JSON.stringify(result, null, ' '));
+    });
 });
 
 
 var server = app.listen(port, '127.0.0.1', function(){
     var host = server.address();
-    console.log("server is up on: " + host.address + ":" + host.port);
+    file.clear(() => {
+         console.log("server is up on: " + host.address + ":" + host.port);
+    });
+    //console.log("server is up on: " + host.address + ":" + host.port);
 });
