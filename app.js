@@ -58,8 +58,11 @@ app.post('/', (request, response) => {
     let name = body.name;
     let result;
 
-    if (name == "") {
+    if (name === "") {
         result = { success: false, reason: 'No name specified!'}
+         response
+                .status(201)
+                .send(JSON.stringify(result, null, ' '));
     }
     else {
         file.isInFile(name).then((found) => {
