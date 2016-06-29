@@ -1,0 +1,65 @@
+{
+  "extends": "eslint-config-airbnb",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "strict": 2,
+    "quotes": 1,
+    "eqeqeq": 1,
+    "curly": 2,
+    "comma-dangle": [2, "never"],
+    "object-curly-spacing": [1, "never"],
+    "array-bracket-spacing": [1, "never"],
+    "no-unused-vars": 1,
+    "no-undef": 2,
+    "id-length": 0,
+    "no-else-return": 0,
+    "camelcase": 1,
+    "no-mixed-requires": [1, true],
+    "new-cap": [1, { capIsNew: true, capIsNewExceptions: ["Qty"] }],
+    "no-underscore-dangle": 1,
+    "react/sort-comp": [1, {
+        order: [
+          'statics',
+          'lifecycle',
+          'everything-else',
+          'render'
+        ],
+        groups: {
+          lifecycle: [
+            'displayName',
+            'propTypes',
+            'contextTypes',
+            'childContextTypes',
+            'mixins',
+            'statics',
+            'defaultProps',
+            'constructor',
+            'getDefaultProps',
+            'getInitialState',
+            'getChildContext',
+            'componentWillMount',
+            'componentDidMount',
+            'componentWillReceiveProps',
+            'shouldComponentUpdate',
+            'componentWillUpdate',
+            'componentDidUpdate',
+            'componentWillUnmount'
+          ]
+        }
+      }],
+    "react/jsx-uses-react": 1,
+    "react/jsx-uses-vars": 1,
+    "react/react-in-jsx-scope": 2,
+    "react/prefer-stateless-function": 0,
+    "block-scoped-var": 0,
+    "padded-blocks": 1,
+    "no-console": 1
+  },
+  "plugins": [
+    "react"
+  ]
+}
