@@ -7,7 +7,10 @@ import {
   REMOVE_ITEM_FAIL,
   GET_ITEM,
   GET_ITEM_SUCCESS,
-  GET_ITEM_FAIL
+  GET_ITEM_FAIL,
+  EDIT_ITEM,
+  EDIT_ITEM_SUCCESS,
+  EDIT_ITEM_FAIL
 } from './types';
 
 export function list() {
@@ -27,6 +30,13 @@ export function create(item) {
 export function remove(index) {
   return ({
     types: [REMOVE_ITEM, REMOVE_ITEM_SUCCESS, REMOVE_ITEM_FAIL],
-    promise: client => client.put('/todos', {data: index})
+    promise: client => client.put('/todos', {data: '', index})
+  });
+}
+
+export function edit(item, index) {
+  return ({
+    types: [EDIT_ITEM, EDIT_ITEM_SUCCESS, EDIT_ITEM_FAIL],
+    promise: client => client.put('/todos', {data: item, index})
   });
 }

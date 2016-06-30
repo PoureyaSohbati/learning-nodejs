@@ -8,7 +8,10 @@ import {
   REMOVE_ITEM_FAIL,
   GET_ITEM,
   GET_ITEM_SUCCESS,
-  GET_ITEM_FAIL
+  GET_ITEM_FAIL,
+  EDIT_ITEM,
+  EDIT_ITEM_SUCCESS,
+  EDIT_ITEM_FAIL
 } from '../actions/types';
 
 const initialState = {
@@ -51,6 +54,9 @@ export default function (state = initialState, action) {
     case GET_ITEM:            return load(state);
     case GET_ITEM_SUCCESS:    return success(state, action);
     case GET_ITEM_FAIL:       return fail(state, action);
+    case EDIT_ITEM:           return load(state);
+    case EDIT_ITEM_SUCCESS:   return success(state, action);
+    case EDIT_ITEM_FAIL:      return fail(state, action);
     default:                  return state;
   }
 }

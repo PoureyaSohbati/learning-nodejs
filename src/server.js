@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 
-import {add, read, remove, clear} from './database';
+import {add, read, remove, clear, edit} from './database';
 /* eslint no-console: 0 */
 
 const app = express();
@@ -44,13 +44,24 @@ app.post('/todos', (req, res) => {
 });
 
 app.put('/todos', (req, res) => {
-  const index = req.body.data;
-  remove(index).then(list => {
-    res.status(200).send(list);
-  }).catch(err => {
-    console.log('DELETE todos err: ', err);
-    throw err;
-  });
+  const index = req.body.index;
+  const data = req.body.data;
+
+  if (data === '') {
+    remove(index).then(list => {
+      res.status(200).send(list);
+    }).catch(err => {
+      console.log('DELETE todos err: ', err);
+      throw err;
+    });
+  } else {
+    edit(data, index).then(list => {
+      res.status(200).send(list);
+    }).catch(err => {
+      console.log('PUT todos err: ', err);
+      throw err;
+    });
+  }
 });
 
 app.start = () => {

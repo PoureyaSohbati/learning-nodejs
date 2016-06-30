@@ -17,7 +17,7 @@ class Todo extends Component {
       <DocumentTitle title={'My Todo List'}>
         <div>
           <List />
-          <Form />
+          <Form newItem />
         </div>
       </DocumentTitle>
     );

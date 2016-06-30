@@ -34,6 +34,16 @@ export function remove(index) {
     .then(todos => write({todos}));
 }
 
+export function edit(data, index) {
+  return read()
+    .then(({todos}) => {
+      const newTodos = todos;
+      newTodos[index] = data;
+      return newTodos;
+    })
+    .then(todos => write({todos}));
+}
+
 export function clear(cb) {
   return write({todos: []}).then(cb);
 }

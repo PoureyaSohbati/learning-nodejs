@@ -11,3 +11,7 @@ export const REMOVE_ITEM_FAIL    = 'REMOVE_ITEM_FAIL';
 export const GET_ITEM            = 'GET_ITEM';
 export const GET_ITEM_SUCCESS    = 'GET_ITEM_SUCCESS';
 export const GET_ITEM_FAIL       = 'GET_ITEM_FAIL';
+
+export const EDIT_ITEM            = 'EDIT_ITEM';
+export const EDIT_ITEM_SUCCESS    = 'EDIT_ITEM_SUCCESS';
+export const EDIT_ITEM_FAIL       = 'EDIT_ITEM_FAIL';
