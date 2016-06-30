@@ -1,16 +1,30 @@
 import ReactDOM from 'react-dom';
 import React, {Component} from 'react';
-import ColorButton from './colorButton';
 import DocumentTitle from 'react-document-title';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+
+import Form from './components/form';
+import reducer from './reducers/todo';
+import middleware from './middleware';
+import List from './components/list';
+
+const store = applyMiddleware(middleware)(createStore)(reducer);
 
 class Todo extends Component {
   render() {
     return (
       <DocumentTitle title={'My Todo List'}>
-        <ColorButton title={'Change Color'} />
+        <div>
+          <List />
+          <Form />
+        </div>
       </DocumentTitle>
     );
   }
 }
 
-ReactDOM.render(<Todo />, document.getElementById('content'));
+ReactDOM.render(
+  <Provider store={store}><Todo /></Provider>,
+  document.getElementById('content')
+);

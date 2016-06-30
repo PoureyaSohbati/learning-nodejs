@@ -1,12 +1,12 @@
 import express from 'express';
-import fs from 'fs';
 import bodyParser from 'body-parser';
-import file from './file';
 import path from 'path';
+
+import {add, read, remove, clear} from './database';
+/* eslint no-console: 0 */
 
 const app = express();
 const port = process.env.PORT || 3000;
-
 
 app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '../public')));
@@ -19,64 +19,50 @@ app.use((request, response, next) => {
 });
 
 
-app.get('/', (request, response) => {
-    response.header('Content-Type', 'text/html');
-    response.sendFile("../public/index.html", {root: __dirname });
+app.get('/', (req, res) => {
+  res.header('Content-Type', 'text/html');
+  res.sendFile('../public/index.html', {root: __dirname});
 });
 
-app.post('/', (request, response) => {
-    let body = request.body;
-    let name = body.name;
-    let result;
-
-    if (name === "") {
-        result = { success: false, reason: 'No name specified!'}
-         response
-                .status(201)
-                .send(JSON.stringify(result, null, ' '));
-    }
-    else {
-        file.isInFile(name).then((found) => {
-            result = found
-                    ? { success: false, reason: 'already exists: ' + name }
-                    : { success: true, added: { name: body.name, description: body.description }};
-
-            if (!found){
-                file.write({name: body.name, description: body.description});
-            }
-
-            response
-                .status(201)
-                .send(JSON.stringify(result, null, ' '));
-        });
-    }
+app.get('/todos', (req, res) => {
+  read().then(list => {
+    res.status(200).send(list);
+  }).catch(err => {
+    console.log('GET todos err: ', err);
+    throw err;
+  });
 });
 
-app.get('/todo', (request, response) => {
-    //response.send({ todo: todo });
-    response.writeHead(200, {"Context-Type" : "text/plain"});
-    file.readAll().pipe(response);
+app.post('/todos', (req, res) => {
+  const data = req.body.data;
+  add(data).then(list => {
+    res.status(201).send(list);
+  }).catch(err => {
+    console.log('POST todos err: ', err);
+    throw err;
+  });
 });
 
-app.get('/todo/:todoName', (request, response) => {
-    var name = request.params.todoName;
-    file.findObj(name).then((obj) => {
-        var result = obj
-                    ? { success: true, name: obj.name, description: obj.description }
-                    : { success: false, reason: 'todo not found: ' + name };
+app.put('/todos', (req, res) => {
+  const index = req.body.data;
+  remove(index).then(list => {
+    res.status(200).send(list);
+  }).catch(err => {
+    console.log('DELETE todos err: ', err);
+    throw err;
+  });
+});
 
-        response
-            .send(JSON.stringify(result, null, ' '));
+app.start = () => {
+  const server = app.listen(port, '127.0.0.1', () => {
+    const host = server.address();
+    clear(() => {
+      console.log('server is up on: %s:%s', host.address, host.port);
+    }).catch(err => {
+      console.log('clearing database err: ', err);
+      throw err;
     });
-});
-
-app.start = function(){
-    var server = app.listen(port, '127.0.0.1', function(){
-        var host = server.address();
-        file.clear(() => {
-            console.log("server is up on: " + host.address + ":" + host.port);
-        });
-    });
-}
+  });
+};
 
 export default app;
