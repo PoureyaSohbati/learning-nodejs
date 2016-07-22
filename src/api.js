@@ -10,6 +10,9 @@ export default class Client {
   post(path, data) {
     return request.post(path, data);
   }
+  del(path) {
+    return request.del(path);
+  }
   put(path, data) {
     return request.put(path, data);
   }

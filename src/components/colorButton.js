@@ -26,7 +26,7 @@ export default class ColorButton extends Component {
     const {color} = this.state;
     const {title} = this.props;
     return (
-      <Button bsStyle={color} onClick={::this.toggle}>{title}</Button>
+      <Button bsStyle={color} onClick={::this.toggle} block>{title}</Button>
     );
   }
 }

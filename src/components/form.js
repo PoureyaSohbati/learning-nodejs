@@ -49,26 +49,39 @@ export default class Form extends Component {
     const {item, formNum} = this.props;
     return (
       this.props.newItem ?
-        <div>
-          <ControlLabel>New Todo Item</ControlLabel>
-          <FormControl type="text" ref="newTodo" placeholder="Enter a Todo" />
-        </div>
+        <FormControl type="text" ref="newTodo" placeholder="Enter a Todo" />
         :
         <FormControl type="text" ref={formNum} onChange={::this.handleChangeText} value={item} />
     );
   }
 
+  makeLabel() {
+    if (this.props.newItem) {
+      return (
+        <Row>
+          <Col xs={6} xsOffset={2}>
+            <form>
+              <ControlLabel>New Todo Item</ControlLabel>
+            </form>
+          </Col>
+        </Row>
+      );
+    }
+    return null;
+  }
+
   render() {
     return (
       <div>
+        {this.makeLabel()}
         <Row>
           <form>
-            <Col xs={6} xsOffset={2}>
+            <Col xs={7} xsOffset={2}>
               <FormGroup controlId="formControlsText">
                 {this.makeForm()}
               </FormGroup>
             </Col>
-            <Col xs={4}>
+            <Col xs={1}>
               <ColorButton title="Save" onClick={::this.handleSubmit} />
             </Col>
           </form>

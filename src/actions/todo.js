@@ -30,7 +30,7 @@ export function create(item) {
 export function remove(index) {
   return ({
     types: [REMOVE_ITEM, REMOVE_ITEM_SUCCESS, REMOVE_ITEM_FAIL],
-    promise: client => client.put('/todos', {data: '', index})
+    promise: client => client.del(`/todos/${index}`)
   });
 }
 

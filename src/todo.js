@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import DocumentTitle from 'react-document-title';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
+import {Row} from 'react-bootstrap';
 
 import Form from './components/form';
 import reducer from './reducers/todo';
@@ -16,8 +17,11 @@ class Todo extends Component {
     return (
       <DocumentTitle title={'My Todo List'}>
         <div>
-          <List />
-          <Form newItem />
+          <Row>''</Row>
+          <Row>
+            <List />
+            <Form newItem />
+          </Row>
         </div>
       </DocumentTitle>
     );

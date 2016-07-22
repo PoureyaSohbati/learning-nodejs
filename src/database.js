@@ -45,5 +45,6 @@ export function edit(data, index) {
 }
 
 export function clear(cb) {
-  return write({todos: []}).then(cb);
+  // return write({todos: []}).then(cb);
+  return Promise.resolve().then(cb);
 }
