@@ -9,6 +9,8 @@ import Form from './components/form';
 import reducer from './reducers/todo';
 import middleware from './middleware';
 import List from './components/list';
+import {Confirmation} from '../email/confirmation';
+import {Upload} from './components/imageUpload';
 
 const store = applyMiddleware(middleware)(createStore)(reducer);
 
@@ -21,6 +23,8 @@ class Todo extends Component {
           <Row>
             <List />
             <Form newItem />
+            {/*<Upload />*/}
+            {/* <Confirmation />*/}
           </Row>
         </div>
       </DocumentTitle>

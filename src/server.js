@@ -3,11 +3,58 @@ import bodyParser from 'body-parser';
 import path from 'path';
 
 import {add, read, remove, clear, edit} from './database';
+import sendEmail from '../email/backend';
+import confirmString from '../email/confirmation';
+import cloudinary from 'cloudinary';
+import {fromFile} from './resolutionChecking';
 /* eslint no-console: 0 */
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+/* =================================
+                Cloudinary
+   ================================= */
+cloudinary.config({
+  cloud_name: 'duddwqol5',
+  api_key: '482322442416532',
+  api_secret: 'EN056FHGske8zgVpmNWw7jyUpBc'
+});
+
+function upload() {
+  console.log('-------------------------------');
+  cloudinary.uploader.upload('/home/poury/Desktop/test.jpg', (result) => {
+    console.log(result);
+  });
+  console.log('-------------------------------');
+}
+
+/* =================================
+                Email
+   ================================= */
+const test = {
+  from: '"testing" <psohbati@ucsc.edu>', // sender address
+  to: 'pourya_s93@yahoo.com', // list of receivers
+  subject: 'Confirmation', // Subject line
+  //  text: 'Hello world 🐴', // plaintext body
+  html: confirmString() // html body
+};
+
+app.get('/email', (req, res) => {
+  sendEmail(test)
+    .then((message) => {
+      console.log('Message sent: %s', message);
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(400);
+    });
+});
+
+/* =================================
+                Todos
+  ================================= */
 app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '../public')));
 app.use('/', express.static(path.join(__dirname, '../build')));
@@ -77,4 +124,5 @@ app.start = () => {
   });
 };
 
+// fromFile();
 export default app;
